@@ -64,14 +64,14 @@ class Node():
             # case 2: z.uncle = black(triangle) => rotate z.parent to opposite of z 
             if isTriangle:
                 z = self.par
-                z.leftRotate()
+                z.leftRotate(False)
             # (case 3 goes after 2 ) z = z.parent
             # case 3: z.uncle = black(line) =>  rotate z.grandparent opposite of z and recolor
             # anyhow, now that triangle is gone, they are in a line. rotate grandparent
             z.par.isRed = False
             grampa = z.grandparent()
             grampa.isRed = True
-            grampa.rightRotate()
+            grampa.rightRotate(False)
             z.insert_repair()
         # same as the last block, but mirrored
         else:
@@ -79,15 +79,15 @@ class Node():
             z = self
             if isTriangle:
                 z = self.par
-                z.rightRotate()
+                z.rightRotate(False)
             z.par.isRed = False
             grampa = z.grandparent()
             grampa.isRed = True
-            grampa.leftRotate()
+            grampa.leftRotate(False)
             z.insert_repair()
 
     # become left child of right son
-    def leftRotate(self):
+    def leftRotate(self, changeCol):
         oldPar = self.par
         wasRoot = self.isRoot()
         rightSon = self.right
@@ -104,9 +104,12 @@ class Node():
         self.right = rightSonOldLeft
         self.par = rightSon
         rightSon.par = oldPar
-    
+        if changeCol:
+            self.isRed = False
+            oldPar.isRed = True
+
     # become right child of left son
-    def rightRotate(self):
+    def rightRotate(self, changeCol):
         oldPar = self.par
         wasRoot = self.isRoot()
         leftSon = self.left
@@ -123,9 +126,26 @@ class Node():
         self.left = leftSonOldRight
         self.par = leftSon
         leftSon.par = oldPar
+        if changeCol:
+            self.isRed = False
+            oldPar.isRed = True
 
     def parent(self):
         return self.par
+
+    def sibling(self):
+        if self.par is None:
+            return None
+        if self.par.left == self:
+            return self.par.right
+        else:
+            return self.par.left
+    
+    @staticmethod
+    def isBlack(self):
+        if self is None:
+            return True
+        return not self.isRed
     
     def isRoot(self):
         return self.par is None
@@ -156,7 +176,7 @@ class Node():
         if self.left is not None:
             self.left.print(level+1)
 
-    def remove(self, value):
+    def remove(self, value, rbtree):
         # TODO NAVIGATE. not sure what to do with duplicates removal
         currNode = self
         while currNode and currNode.val != value:
@@ -165,45 +185,107 @@ class Node():
             else:
                 currNode = currNode.right
         if currNode is None:
-            return self
+            return 
         # go to far right if they're equal
         while currNode.right and currNode.right == value:
             currNode = currNode.right
         # 1) convert to 0 or 1 child case
-        succ = self.findSuccessor()
-        if succ is None:
+        if self.left is None or self.right is None:
             # since it has < 2 children
-            return self.remove01(value)
+            self.remove01(rbtree)
+        succ = self.findSuccessor()
         succVal = succ.val
         succ.val = self.val
         self.val = succVal
-        self.right = succ.right.remove01(value)
-        return self
+        self.right = self.right.remove(value, rbtree)
 
-    # remove a node with 0 or 1 children
-    def remove01(self, value):
+    @staticmethod
+    def replaceNode(par, child, rbtree):
+        # switch child and parent, and parent gets lost in the process
+        if par.par:
+            isLeft = par.par.left == par
+            if isLeft:
+                par.par.left = child
+            else:
+                par.par.right = child
+        else:
+            rbtree.root = child
+
+    # remove this node with 0 or 1 children
+    def remove01(self, rbtree):
         assert not self.right or not self.left, "at least 1 should be None"
-        # B if node is red find a successor, swap and delete.
+        child = self.left if self.left else self.right
+        Node.replaceNode(self, child, rbtree)        
 
-        # 2) if node to be deleted is red, or child is red
-        #       then do replace 
-        if self.isRed:
-            par = self.par
-            if not self.left and not self.right:
-                # if no children, delete itself
-                if par is None:
-                    return None
-                # set to where parent pointed to self to none
-                par.left = par.left if par.left != self else None
-                par.right = par.right if par.right != self else None
+        if Node.isBlack(self):
+            if Node.isBlack(child) == False:
+                child.isRed = False
+            else:
+                # 3) not red node and no red children: 6 "double-black" cases.
+                # Element is deleted now, but fixes are done with these cases
+                child.del_case1(rbtree)
 
-            assert par is not None, "Parent should never be none here"
-            thatOneChild = self.left if self.left else self.right
-            thatOneChild.par = par
-            return thatOneChild
+    # https://www.youtube.com/watch?v=CTvfzU_uNKE
+    # source of 6 double-black cases
 
-        # 3) double black node: 6 cases...
-        pass
+    # root case
+    def del_case1(self, rbtree):
+        if self.isRoot():
+            rbtree.root = self
+        self.del_case2(rbtree)
+    
+    def del_case2(self, rbtree):
+        sib = self.sibling()
+        assert sib is not None, "Sib is None - what would rotation even mean then? It shouldn't happen"
+        if not Node.isBlack(sib):
+            if self.par.left == sib: 
+                sib.rightRotate(True)
+            else:
+                sib.leftRotate(True)
+            if sib.isRoot():
+                rbtree.root = sib
+        self.del_case3(rbtree)
+
+    
+    def del_case3(self, rbtree):
+        sib = self.sibling()
+        if Node.isBlack(self.par) and Node.isBlack(sib) and Node.isBlack(sib.left) and Node.isBlack(sib.right):
+            sib.isRed = True
+            self.par.del_case1(rbtree)
+        else:
+            self.del_case4(rbtree)
+
+
+    def del_case4(self, rbtree):
+        sib = self.sibling()
+        if Node.isBlack(sib.par) == False and Node.isBlack(sib) and Node.isBlack(sib.left) and Node.isBlack(sib.right):
+            sib.isRed = True
+            self.par.isRed = False
+        else:
+            self.del_case5(rbtree)
+        
+    def del_case5(self, rbtree):
+        sib = self.sibling()
+        if Node.isBlack(sib):
+            isLeftChild = self.par.left == self
+            if isLeftChild and Node.isBlack(sib.right) and Node.isBlack(sib.left) == False:
+                sib.left.rightRotate(True)
+            elif not isLeftChild and Node.isBlack(sib.left) and Node.isBlack(sib.right) == False:
+                sib.right.left(True)
+        self.del_case6(rbtree)
+        
+    def del_case6(self, rbtree):
+        sib = self.sibling()
+        sib.isRed = sib.par.isRed
+        sib.par.isRed = False
+        if self == self.par.left:
+            sib.right.isRed = False
+            sib.leftRotate(False)
+        else:
+            sib.elft.isRed = False
+            sib.rightRotate(False)
+        if sib.isRoot():
+            rbtree.root = sib
 
     # finds a successor in right subtree
     def findSuccessor(self):
@@ -230,7 +312,7 @@ class RBTree():
             self.root = self.root.insert(newVal)
 
     def remove(self, newVal):
-        self.root = self.root.remove(newVal)
+        self.root.remove(newVal, self)
         
     def print(self, level=0):
         if self.root is None:
@@ -242,17 +324,17 @@ def main():
     print("Hi")
     tree = RBTree()
     
-    tree.insert(1)
-    tree.insert(2)
+
     tree.insert(3)
     tree.insert(4)
     tree.insert(5)
     tree.insert(1)
-    tree.insert(1)
-
+    tree.insert(2)
 
     tree.print()
-
+    print("----REMOVING------")
+    tree.remove(4)
+    tree.print()
     print("Bye")
 
 if __name__ == "__main__":
