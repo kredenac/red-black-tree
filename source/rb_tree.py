@@ -1,17 +1,25 @@
 class Node():
-    def __init__(self, val, par, left = None, right = None, isRed = True):
+    def __init__(self, val, par, left = None, right = None, isRed = True, isNull = False):
         self.isRed = isRed
         self.left = left
         self.right = right
         self.val = val
         self.par = par
+        self.isNull = isNull
+        if not isNull:
+            self.left = Node.createNullNode(self)
+            self.right = Node.createNullNode(self)
+
+    @staticmethod
+    def createNullNode(par):
+        return Node(0, par, isRed=False, isNull=True)
 
     # left < root <= right
     def insert(self, newVal):
         lastNode = None
         currNode = self
         # go all the way to the leaf
-        while currNode is not None:
+        while not currNode.isNull:
             lastNode = currNode
             if newVal < currNode.val:
                 currNode = currNode.left
@@ -99,7 +107,7 @@ class Node():
                 oldPar.left = rightSon
             else:
                 oldPar.right = rightSon
-        if rightSonOldLeft is not None:
+        if not rightSonOldLeft.isNull:
             rightSonOldLeft.par = self
         self.right = rightSonOldLeft
         self.par = rightSon
@@ -121,7 +129,7 @@ class Node():
                 oldPar.left = leftSon
             else:
                 oldPar.right = leftSon
-        if leftSonOldRight is not None:
+        if not leftSonOldRight.isNull:
             leftSonOldRight.par = self
         self.left = leftSonOldRight
         self.par = leftSon
@@ -143,8 +151,8 @@ class Node():
     
     @staticmethod
     def isBlack(self):
-        if self is None:
-            return True
+        # if self is None:
+        #     return True
         return not self.isRed
     
     def isRoot(self):
@@ -159,7 +167,6 @@ class Node():
         grand = self.grandparent()
         if grand is None:
             assert "TODO: Maybe this shouldn't happen"
-            return None
         if grand.left == self.par:
             return grand.right
         else:
@@ -170,37 +177,38 @@ class Node():
     
     def print(self, level=0):
         print(f"{'__'*level}{self}")
-        if self.right is not None:
+        if not self.right.isNull:
             self.right.print(level+1)
             print()
-        if self.left is not None:
+        if not self.left.isNull:
             self.left.print(level+1)
 
     def remove(self, value, rbtree):
         # TODO NAVIGATE. not sure what to do with duplicates removal
         currNode = self
-        while currNode and currNode.val != value:
+        while not currNode.isNull and currNode.val != value:
             if value < currNode.val:
                 currNode = currNode.left
             else:
                 currNode = currNode.right
-        if currNode is None:
+        if currNode.isNull:
             return 
         # go to far right if they're equal
-        while currNode.right and currNode.right == value:
+        while not currNode.right.isNull and currNode.right == value:
             currNode = currNode.right
         # 1) convert to 0 or 1 child case
-        if self.left is None or self.right is None:
+        if currNode.left.isNull or currNode.right.isNull:
             # since it has < 2 children
-            self.remove01(rbtree)
-        succ = self.findSuccessor()
+            currNode.remove01(rbtree)
+            return
+        succ = currNode.findSuccessor()
         succVal = succ.val
-        succ.val = self.val
-        self.val = succVal
-        self.right = self.right.remove(value, rbtree)
+        succ.val = currNode.val
+        currNode.val = succVal
+        currNode.right = currNode.right.remove(value, rbtree)
 
     @staticmethod
-    def replaceNode(par, child, rbtree):
+    def switchNodes(par, child, rbtree):
         # switch child and parent, and parent gets lost in the process
         if par.par:
             isLeft = par.par.left == par
@@ -213,9 +221,9 @@ class Node():
 
     # remove this node with 0 or 1 children
     def remove01(self, rbtree):
-        assert not self.right or not self.left, "at least 1 should be None"
-        child = self.left if self.left else self.right
-        Node.replaceNode(self, child, rbtree)        
+        assert self.right.isNull or self.left.isNull, "at least 1 should be None"
+        child = self.left if not self.left.isNull else self.right
+        Node.switchNodes(self, child, rbtree)        
 
         if Node.isBlack(self):
             if Node.isBlack(child) == False:
@@ -291,10 +299,10 @@ class Node():
     def findSuccessor(self):
         assert self.right is not None, "right child is None in findSuccessor"
         curr = self.right
-        while curr.left:
+        while not curr.left.isNull:
             curr = curr.left
         # go to far right if they're equal
-        while curr.right and curr.right.val == curr.val:
+        while not curr.right.isNull and curr.right.val == curr.val:
             curr = curr.right
         return curr
 
