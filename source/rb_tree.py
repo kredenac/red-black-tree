@@ -86,23 +86,6 @@ class Node():
             grampa.leftRotate()
             z.insert_repair()
 
-    def remove(self, value):
-        pass
- 
-# root is black
-# leaves are black
-# red->children are black
-# number of black nodes to leaves is const
-
-# at fisrt, z is red
-
-# if parent is black then chill
-
-# case 0: z is root => z is black
-# case 1: z.uncle = red => recelor parent, grandp, uncle
-# case 2: z.uncle = black(triangle) => rotate z.parent to opposite of z
-# case 3: z.uncle = black(line) =>  rotate z.grandparent opposite of z and recolor
-
     # become left child of right son
     def leftRotate(self):
         oldPar = self.par
@@ -172,8 +155,71 @@ class Node():
             print()
         if self.left is not None:
             self.left.print(level+1)
-        
 
+    def remove(self, value):
+        # TODO NAVIGATE. not sure what to do with duplicates removal
+        currNode = self
+        while currNode and currNode.val != value:
+            if value < currNode.val:
+                currNode = currNode.left
+            else:
+                currNode = currNode.right
+        if currNode is None:
+            return self
+        # go to far right if they're equal
+        while currNode.right and currNode.right == value:
+            currNode = currNode.right
+        # 1) convert to 0 or 1 child case
+        succ = self.findSuccessor()
+        if succ is None:
+            # since it has < 2 children
+            return self.remove01(value)
+        succVal = succ.val
+        succ.val = self.val
+        self.val = succVal
+        self.right = succ.right.remove01(value)
+        return self
+
+    # remove a node with 0 or 1 children
+    def remove01(self, value):
+        assert not self.right or not self.left, "at least 1 should be None"
+        # B if node is red find a successor, swap and delete.
+
+        # 2) if node to be deleted is red, or child is red
+        #       then do replace 
+        if self.isRed:
+            par = self.par
+            if not self.left and not self.right:
+                # if no children, delete itself
+                if par is None:
+                    return None
+                # set to where parent pointed to self to none
+                par.left = par.left if par.left != self else None
+                par.right = par.right if par.right != self else None
+
+            assert par is not None, "Parent should never be none here"
+            thatOneChild = self.left if self.left else self.right
+            thatOneChild.par = par
+            return thatOneChild
+
+        # 3) double black node: 6 cases...
+        pass
+
+    # finds a successor in right subtree
+    def findSuccessor(self):
+        assert self.right is not None, "right child is None in findSuccessor"
+        curr = self.right
+        while curr.left:
+            curr = curr.left
+        # go to far right if they're equal
+        while curr.right and curr.right.val == curr.val:
+            curr = curr.right
+        return curr
+
+# root is black
+# leaves are black
+# red->children are black
+# number of black nodes to leaves is const
 class RBTree():
     def __init__(self, root=None):
         self.root = root
