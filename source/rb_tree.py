@@ -137,7 +137,46 @@ class Node():
         if changeCol:
             self.isRed = False
             oldPar.isRed = True
+    
+    def rightRotateDel(self, changeCol):
+        root = self
+        parent = root.par
+        root.par = parent.par
+        if parent.par is not None:
+            if parent.par.right ==  parent:
+                parent.par.right = root
+            else:
+                parent.par.left = root
+        right = root.right
+        root.right = parent
+        parent.par = root
+        parent.left = right
+        if right is not None:
+            right.par = parent
+        if changeCol:
+            root.isRed = False
+            parent.isRed = True
+    
+    def leftRotateDel(self, changeCol):
+        root = self
+        parent = root.par
+        root.par = parent.par
+        if parent.pare is not None:
+            if parent.par.right == parent:
+                parent.par.right = root
+            else:
+                parent.par.left = root
+        left = root.left
+        root.left = parent
+        parent.par = root
+        parent.right = left
+        if left is not None:
+            left.par = parent
+        if changeCol:
+            root.isRed = False
+            parent.isRed = True
 
+        
     def parent(self):
         return self.par
 
@@ -151,8 +190,8 @@ class Node():
     
     @staticmethod
     def isBlack(self):
-        # if self is None:
-        #     return True
+        if self is None:
+            return True
         return not self.isRed
     
     def isRoot(self):
@@ -205,23 +244,23 @@ class Node():
         succVal = succ.val
         succ.val = currNode.val
         currNode.val = succVal
-        currNode.right = currNode.right.remove(value, rbtree)
+        currNode.right.remove(value, rbtree)
 
     @staticmethod
     def switchNodes(par, child, rbtree):
         # switch child and parent, and parent gets lost in the process
-        if par.par:
+        child.par = par.par
+        if par.par is None:
+            rbtree.root = child
+        else:
             isLeft = par.par.left == par
             if isLeft:
                 par.par.left = child
             else:
                 par.par.right = child
-        else:
-            rbtree.root = child
 
     # remove this node with 0 or 1 children
     def remove01(self, rbtree):
-        assert self.right.isNull or self.left.isNull, "at least 1 should be None"
         child = self.left if not self.left.isNull else self.right
         Node.switchNodes(self, child, rbtree)        
 
@@ -244,12 +283,11 @@ class Node():
     
     def del_case2(self, rbtree):
         sib = self.sibling()
-        assert sib is not None, "Sib is None - what would rotation even mean then? It shouldn't happen"
         if not Node.isBlack(sib):
             if self.par.left == sib: 
-                sib.rightRotate(True)
+                sib.rightRotateDel(True)
             else:
-                sib.leftRotate(True)
+                sib.leftRotateDel(True)
             if sib.isRoot():
                 rbtree.root = sib
         self.del_case3(rbtree)
@@ -277,9 +315,9 @@ class Node():
         if Node.isBlack(sib):
             isLeftChild = self.par.left == self
             if isLeftChild and Node.isBlack(sib.right) and Node.isBlack(sib.left) == False:
-                sib.left.rightRotate(True)
+                sib.left.rightRotateDel(True)
             elif not isLeftChild and Node.isBlack(sib.left) and Node.isBlack(sib.right) == False:
-                sib.right.left(True)
+                sib.right.leftRotateDel(True)
         self.del_case6(rbtree)
         
     def del_case6(self, rbtree):
@@ -288,16 +326,15 @@ class Node():
         sib.par.isRed = False
         if self == self.par.left:
             sib.right.isRed = False
-            sib.leftRotate(False)
+            sib.leftRotateDel(False)
         else:
-            sib.elft.isRed = False
-            sib.rightRotate(False)
-        if sib.isRoot():
+            sib.left.isRed = False
+            sib.rightRotateDel(False)
+        if sib.isRoot(): 
             rbtree.root = sib
 
     # finds a successor in right subtree
     def findSuccessor(self):
-        assert self.right is not None, "right child is None in findSuccessor"
         curr = self.right
         while not curr.left.isNull:
             curr = curr.left
