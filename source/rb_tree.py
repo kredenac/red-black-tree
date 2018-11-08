@@ -35,7 +35,7 @@ class Node():
         return curr
 
     # called after inserting a new node,
-    # and sometimes recursively
+    # and recursively
     def insert_repair(self):
         if self.par is None:
             self.isRed = False
@@ -47,24 +47,44 @@ class Node():
         uncle = self.uncle()
         isUncleRed = False if uncle is None else uncle.isRed
         if isUncleRed:
-            # case 1: z.uncle = red => recelor parent, grandp, uncle
+            # case 1: z.uncle = red => recolor parent, grandp, uncle
             return
 
         # else, uncle is black
-        # case 2: z.uncle = black(triangle) => rotate z.parent to opposite of z
-        # case 3: z.uncle = black(line) =>  rotate z.grandparent opposite of z and recolor
-        
+
+        isParLeftOfGramp = self.par.par.left == self.par
+        if isParLeftOfGramp:
+            # triangle is when z, parent and grandparent are not in a straight line
+            isTriangle = self.par.right == self
+            z = self
+            # case 2: z.uncle = black(triangle) => rotate z.parent to opposite of z 
+            if isTriangle:
+                z = self.par
+                z.leftRotate()
+            # (case 3 goes after 2 ) z = z.parent
+            # case 3: z.uncle = black(line) =>  rotate z.grandparent opposite of z and recolor
+            # anyhow, now that triangle is gone, they are in a line. rotate grandparent
+            z.par.isRed = False
+            grampa = z.grandparent()
+            grampa.isRed = True
+            grampa.rightRotate()
+            z.insert_repair()
+        # same as the last block, but mirrored
+        else:
+            isTriangle = self.par.left == self
+            z = self
+            if isTriangle:
+                z = self.par
+                z.rightRotate()
+            z.par.isRed = False
+            grampa = z.grandparent()
+            grampa.isRed = True
+            grampa.leftRotate()
+            z.insert_repair()
+
     def remove(self, value):
         pass
-    
-    def case1(self):
-        pass
-    
-    def case2(self):
-        pass
-    
-    def case3(self):
-        pass
+ 
 # root is black
 # leaves are black
 # red->children are black
@@ -78,11 +98,32 @@ class Node():
 # case 1: z.uncle = red => recelor parent, grandp, uncle
 # case 2: z.uncle = black(triangle) => rotate z.parent to opposite of z
 # case 3: z.uncle = black(line) =>  rotate z.grandparent opposite of z and recolor
+
+    # become left child of right son
     def leftRotate(self):
-        pass
+        oldPar = self.par
+        wasLeftSon = oldPar.left == self
+        rightSon = self.right
+        rightSonOldLeft = rightSon.left
+        rightSon.left = self
+        if wasLeftSon:
+            oldPar.left = rightSon
+        else:
+            oldPar.right = rightSon
+        self.right = rightSonOldLeft
     
+    # become right child of left son
     def rightRotate(self):
-        pass
+        oldPar = self.par
+        wasLeftSon = oldPar.left == self
+        leftSon = self.left
+        leftSonOldRight = leftSon.right
+        leftSon.right = self
+        if wasLeftSon:
+            oldPar.left = leftSon
+        else:
+            oldPar.right = leftSon
+        self.left = leftSonOldRight
 
     def parent(self):
         return self.par
