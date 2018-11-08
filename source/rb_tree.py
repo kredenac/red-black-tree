@@ -1,4 +1,8 @@
 class Node():
+    # root is black
+    # leaves are black
+    # red->children are black
+    # number of black nodes to leaves is const
     def __init__(self, val, par, left = None, right = None, isRed = True, isNull = False):
         self.isRed = isRed
         self.left = left
@@ -175,7 +179,6 @@ class Node():
         if changeCol:
             root.isRed = False
             parent.isRed = True
-
         
     def parent(self):
         return self.par
@@ -223,7 +226,6 @@ class Node():
             self.left.print(level+1)
 
     def remove(self, value, rbtree):
-        # TODO NAVIGATE. not sure what to do with duplicates removal
         currNode = self
         while not currNode.isNull and currNode.val != value:
             if value < currNode.val:
@@ -291,7 +293,6 @@ class Node():
             if sib.isRoot():
                 rbtree.root = sib
         self.del_case3(rbtree)
-
     
     def del_case3(self, rbtree):
         sib = self.sibling()
@@ -300,7 +301,6 @@ class Node():
             self.par.del_case1(rbtree)
         else:
             self.del_case4(rbtree)
-
 
     def del_case4(self, rbtree):
         sib = self.sibling()
@@ -343,10 +343,7 @@ class Node():
             curr = curr.right
         return curr
 
-# root is black
-# leaves are black
-# red->children are black
-# number of black nodes to leaves is const
+# RBTree is a wrapper around Nodes, which actually do all the work
 class RBTree():
     def __init__(self, root=None):
         self.root = root
@@ -368,7 +365,6 @@ class RBTree():
 def main():
     print("Hi")
     tree = RBTree()
-    
 
     tree.insert(3)
     tree.insert(4)
@@ -379,6 +375,14 @@ def main():
     tree.print()
     print("----REMOVING------")
     tree.remove(4)
+    tree.print()
+    tree.insert(4)
+    tree.remove(99)
+    tree.insert(10)
+    tree.insert(55)
+    tree.insert(15)
+    tree.insert(-3)
+    tree.insert(777)
     tree.print()
     print("Bye")
 
