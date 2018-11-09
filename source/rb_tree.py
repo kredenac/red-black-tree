@@ -44,6 +44,15 @@ class Node():
         while curr.par is not None:
             curr = curr.par
         return curr
+    
+    def find(self, val):
+        currNode = self
+        while currNode is not None and currNode.val != val:
+            if val < currNode.val:
+                currNode = currNode.left
+            elif val > currNode.val:
+                currNode = currNode.right
+        return currNode
 
     # called after inserting a new node,
     # and recursively
@@ -361,6 +370,11 @@ class RBTree():
             print("Empty tree.")
             return
         self.root.print()
+    
+    def find(self, val):
+        if self.root is None:
+            return None
+        return self.root.find(val)
         
 def main():
     print("Hi")
@@ -384,6 +398,7 @@ def main():
     tree.insert(-3)
     tree.insert(777)
     tree.print()
+    print("finding...", tree.find(44))
     print("Bye")
 
 if __name__ == "__main__":

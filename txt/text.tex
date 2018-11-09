@@ -22,11 +22,11 @@
 
 \title{Crveno-crna stabla\\ \small{Seminarski rad u okviru kursa\\Konstrukcija i analiza algoritama 2\\ Matematički fakultet}}
 
-\author{Nikola Dimitrijevića, 1086/2017\\ nikoladim95@gmail.com}
+\author{Nikola Dimitrijević, 1086/2017\\ nikoladim95@gmail.com}
 \maketitle
 
 \abstract{
-    Crveno-crna stabla su vrsta samobalansirajućih stabala. To je struktura podataka koja garantuje brze operacije umetanja, pretrage i brisanja.
+    Crveno-crna stabla su vrsta binarnih samobalansirajućih stabala. To je struktura podataka koja garantuje brze operacije umetanja, pretrage i brisanja.
     Svaki čvor stabla ima boju: crnu ili crvenu. Uz određena pravila i načine na koje se menja stablo dobija se gornja granica za koliko stablo može biti nebalansirano.
 
 }
@@ -37,9 +37,9 @@
 
 \section{Osnovno}
 \label{sec:uvod}
-Crveno-crna stabla su struktura podataka koja omogućava brze operacije umetanja, brisanja i pretrage. Spadaju u samobalansirajuća stabala.
-Svaki čvor ima dodatan bit (ili već neki tip podatka) koji reprezentuje boju čvora. Za baš crvenu i crnu boju su se autori odlučili pošto je pored pored klasične crne,
-crvena boja najbolje iygledala na tadašnjim laserskim štampačima. Još jedan razlog je što su imali crvene i crne hemijske pa su tako crtali ova stabla.
+Crveno-crna stabla su struktura podataka koja omogućava brze operacije umetanja, brisanja i pretrage. Spadaju u binarna samobalansirajuća stabla.
+Svaki čvor ima dodatan bit (ili već neki tip podatka) koji reprezentuje boju čvora. Autori su se odlučili za crvenu i crnu boju jer je, pored klasične crne,
+crvena najbolje izgledala na tadašnjim laserskim štampačima \cite{funfact}. Još jedan razlog je to što su imali crvene i crne hemijske pa su tako crtali ova stabla.
 
 \begin{figure}[h!]
 \begin{center}
@@ -50,13 +50,12 @@ crvena boja najbolje iygledala na tadašnjim laserskim štampačima. Još jedan 
 \end{figure}
 
 Za razliku od mnogih stabala, u implementacijama crveno-crnih stabala se umesto uobičajenih null pokazivača koriste specijalni null čvorovi (Na slici \ref{fig:primer} su označeni sa NIL) koji ne sadrže nikakve podatke
-koji se unose u strukturu. Iako bi bilo moguće implementirati sve operacije crveno-crnih stabala korišćenjem običnih null pokazivača, ovako se uprošćavaju njihove implementacije.
+koji se unose u strukturu. Iako je moguće implementirati sve operacije crveno-crnih stabala korišćenjem običnih null pokazivača, ovako se uprošćavaju njihove implementacije.
 Da bi se uštedelo na memoriji, umesto da postoji mnogo različitih null čvorova, moguće je imati jedan takav čvor u memoriji, a da svi ostali koji žele da pokazuju na null čvor pokazuju
 baš na samo tog jednog.
-
 Crveno-crna stabla se koriste za skladištenje podataka koji imaju uređenost, pošto se na osnovu poretka određuje pozicija elemenata u stablu.
 \section{Svojstva}
-\label{sec:termini_i_citiranje}
+\label{sec:svojstva}
 
 \begin{itemize}
         \item Svaki čvor je ili crn ili crven.
@@ -66,210 +65,117 @@ Crveno-crna stabla se koriste za skladištenje podataka koji imaju uređenost, p
         \item Svaki put od korena do svih NIL listova ima isti broj crnih čvorova.
 \end{itemize}
 
+Na osnovu datih svojstava može se i intuitivno pokazati zašto ova stabla ostaju balansirana.
+
+Svaki put od korena do lista ima isti broj crnih čvorova. Jedini način da se poveća broj čvorova na 
+tom putu jeste da se ubace crveni čvorovi. Međutim, kako ne smeju biti dva crvena čvora jedan za drugim,
+to znači da se bilo koja putanja od korena do lista može udvostručiti ako bi se nakon svakog crnog čvora
+ubacio crven čvor. To bi u najgorem slučaju udvostručilo visinu tog podstabla, ali je upravo to i najviše
+što stablo može biti udaljeno od potupne balansiranosti. Dakle u najgorem slučaju je jedno podstablo dva puta
+dublje od svog brata podstabla.
+
 \textit{Crna dubina} stabla je broj crnih čvorova od korena do listova, koji je za svaki put od korena do lista isti.
+
+\section{Operacije}
+
+
+\subsection{Pretraga}
+
+Počevsi od korena, ako je trenutni čvor trazen: gotovo, inače ako
+je traženi manji od trenutnog rekurzivno se pretražuje levo podstablo, inače se rekurzivno pretražuje desno podstablo.
+
+\subsection{Umetanje}
+\textit{Deda} čvora je od čvorovog oca otac.
+
+\textit{Ujak} čvora je od dede čvora drugi sin, odnosno onaj sin koji nije roditelj čvoru.
+
+
+    Trougao formacija je kada je čvor levi sin oca, a otac desni sin dede, ili slučaj u ogledalu. 
+    Primer na slici \ref{fig:triangle}.
+    \begin{figure}[h!]
+        \begin{center}
+        \includegraphics[scale=0.5]{triangle.png}
+        \end{center}
+        \caption{Trougao formacija.}
+        \label{fig:triangle}
+    \end{figure}
+
+    Linija formacija je kada je čvor levi sin oca i otac levi sin dede, ili u slučaj ogledalu.
+    Primer na slici \ref{fig:line}.
+    \begin{figure}[h!]
+        \begin{center}
+        \includegraphics[scale=0.5]{line.png}
+        \end{center}
+        \caption{Linija formacija.}
+        \label{fig:line}
+        \end{figure}
+
+    Postupak umetanja:
+    \begin{itemize}
+
+    \item Kada se dodaje nova vrednost u stablo, uvek se prvo nov čvor oboji u crveno.
+    \item Spušta se kroz stablo do listova, i onda se umeće kao potomak.
+
+    \item Ako je roditelj crn, onda kraj
+
+   \item Ako je novi čvor koren, oboji ga u crno.
+   \item Ako mu je otac crn, onda se ne radi ništa, jer je stablo i dalje ispravno.
+   \item Ako mu je ujak crven, onda oboji ujaka i oca u crno, a dedu u crveno. Obradi dedu rekurzivno.
+   \item Ako mu je ujak crn i u trouglu su, onda se rotira otac čvora u suprotnu stranu od sina.
+   \item Ako mu je ujak crn i u liniji su, onda se deda čvora rotira u suprotnu stranu od unuka.
+\end{itemize}
+
+
+\subsection{Brisanje}
+Brisanje je komplikovanije od pretrage i umetanja.
+
+\begin{itemize}
+    \item Prvo se traži čvor koji se briše. Ako nije prisutan kraj.
+    \item Ako nađeni čvor ima oba sina, onda prvo mora da se svede na prostiji slučaj, gde ima 0 ili 1 sina.
+    \item Nađe se sledbenik trenutnog čvora u stablu, odnosno najmanji element u desnom podstablu.
+    \item Čvor koji se briše zameni mesto sa njegovim sledbenikom.
+    \item Njegov sledbenik ima najviše jednog potomka, pošto da je imao levog potomka, onda bi on bio sledbenik.
+    \item Sada čvor koji se briše ima najviše jednog potomka. 
+    \item Ako nema nijednog potomka i crven je čvor, onda se samo obriše.
+    \item Inače, pošto je čvor crn ne može samo da se obriše jer bi se smanjila crna dubina.
+    \item Ako čvor ima jedno crveno dete, umesto sebe stavi dete i obriše sebe.
+    \item Inače se prolazi kroz šest specifičnih i zamršenih koraka. Za detalje pogledati \cite{cases}.
+\end{itemize}
+
 
 \section{Upoređivanje sa AVL stablima}
     Crveno-crna stabla su, kao i AVL stabla, samobalansirajuća. Oba pružaju O(log n) vreme pretrage, umetanja i brisanja.
+    AVL stabla su bila popularna pre nego što su crveno-crna stabla postala poznata.
 
-    Razlika je u tome što crveno-crna stabla garantuju O(1) rotacija po operaciji umetanja. 
+    Za razliku od AVL stabla, teža su za implementaciju. Pre svega zbog svih detalja implementacije šest različitih slučajeva 
+    popravke nakon brisanja.
+    Oba stabla imaju linearnu memorijsku složenost.
+
+    AVL stabla imaju jaču garanciju balansiranosti. Kod njih je razlika dubina levog i densog podstabla najviše jedan, a crveno-crna garantuju da razlika nije više od duplo.
+
+    Prednost crveno-crnih stabla je što garantuju O(1) rotacija po operaciji umetanja. 
     Ta stvar zaista utiče na performanse u pravim implementacijama.
 
-    Crveno-crna stabla garantuju da jedna strana stabla nije vise od duplo duza od druge.
+    Crveno-crna stabla garantuju da jedna strana stabla nije više od duplo duža od druge.
 
     AVL stabla imaju 4 rotacije. LR, LL, RR, RL.
-    Crveno-crna stabla imaju samo levu rotaciju i desnu. Medjutim, postoje neki slucajevi kada se brise element u kojima je potrebna dodatna obrada
+    Crveno-crna stabla imaju samo levu i desnu rotaciju. Međutim, postoje neki slučajevi kada se briše element u kojima je potrebna dodatna obrada
     kako bi stablo ostalo balansirano.
-    Ima 6 mogucih slucajeva. Ide od prvog do poslednjeg, usput primenjujuci pravila ako je moguce. Postoje tri terminirajuca pravila, tj. 
-    ako je njihov uslov zadovoljen, onda se odradi potrebno azuriranje i prekida prolazak kroz ostale slucajeve.
+    Ima 6 mogućih slucajeva. Ide se od prvog do poslednjeg, usput primenjujući pravila ako je moguće. Postoje tri terminirajuća pravila, tj. 
+    ako je njihov uslov zadovoljen, onda se odradi potrebno ažuriranje i prekida prolazak kroz ostale slučajeve.
     
-    Posto su i crveno-crno stablo i AVL stablo stabla pretrage, na uobicajen nacin se vrsi pretraga. Pocevsi od korena, ako je trenutni cvor trazen gotovo, inace ako
-    je trazeni manji od trenutnog rekurzivno se pretrazuje levo podstablo, inace se rekurzivno pretrazuje desno podstablo.
-\section{Umetanje}
-    Kada se dodaje nova vrednost u stablo, uvek se prvo taj cvor oboji u crveno.
-    Spusta se kroz stablo do listova, i onda se umece kao potomak.
+    Pošto su i crveno-crno stablo i AVL stablo stabla pretrage, na uobičajen način se vrši pretraga.
 
-    Trougao formacija je...
-    Linija formacija je...
+\subsection{Zaključak}
+Crveno-crna stabla su danas najpopularniji izbor implementacije samobalansirajućih binarnih stabala.
 
-    Ako je roditelj crn, onda smo gotovi
-
-    Ako je novi cvor koren, oboji ga u crno.
-    Ako mu je ujak crven, onda ...
-    Ako mu je ujak crn i u liniji su, onda ...
-    Ako mu je ujak crn i u trouglu su, onda ...
-
-
-
-\section{Brisanje}
-
-Reference koje se koriste u ovom tekstu zadate su u datoteci {\em seminarski.bib}. Prevođenje u pdf format u Linux okruženju može se uraditi na sledeći način:
-\begin{verbatim}
-pdflatex TemaImePrezime.tex 
-bibtex TemaImePrezime.aux 
-pdflatex TemaImePrezime.tex 
-pdflatex TemaImePrezime.tex 
-\end{verbatim}
-Prvo latexovanje je neophodno da bi se generisao {\em .aux} fajl. {\em bibtex} proizvodi odgovarajući {\em .bbl} fajl koji se koristi za generisanje literature. 
-Potrebna su dva prolaza (dva puta pdflatex) da bi se reference ubacile u tekst (tj da ne bi ostali znakovi pitanja umesto referenci). Dodavanjem novih referenci potrebno je ponoviti ceo postupak.  
-
-
-Broj naslova i podnaslova je proizvoljan. Neophodni su samo Uvod i Zaključak. Na poglavlja unutar teksta referisati se po potrebi. 
-\begin{primer}
-U odeljku \ref{sec:naslov1} precizirani su osnovni pojmovi, dok su zaključci dati u odeljku \ref{sec:zakljucak}.
-\end{primer}
-
-
-
-
-\section{Slike i tabele}
-\label{slike_i_tabele}
-
-Slike i tabele treba da budu u svom okruženju, sa odgovarajućim naslo\-vima, obeležene labelom da koje omogućava referenciranje. 
-
-\begin{primer} Ovako se ubacuje slika. Obratiti pažnju da je dodato i 
-\begin{verbatim}
-\usepackage{graphicx}
-\end{verbatim}
-
-%\begin{figure}[h!]
-%\begin{center}
-%\includegraphics[scale=0.75]{pande.jpg}
-%\end{center}
-%\caption{Pande}
-%\label{fig:pande}
-%\end{figure}
-
-%Na svaku sliku neophodno je referisati se negde u tekstu. Na primer, na slici \ref{fig:pande} prikazane su pande. 
-\end{primer}
-
-\begin{primer} I tabele treba da budu u svom okruženju, i na njih je neopho\-dno referisati se u tekstu. Na primer, u tabeli \ref{tab:tabela1} su prikazana različita pora\-vnanja u tabelama.
-
-\begin{table}[h!]
-\begin{center}
-\caption{Razlčita poravnanja u okviru iste tabele ne treba koristiti jer su nepregledna.}
-\begin{tabular}{|c|l|r|} \hline
-centralno poravnanje& levo poravnanje& desno poravnanje\\ \hline
-a &b&c\\ \hline
-d &e&f\\ \hline
-\end{tabular}
-\label{tab:tabela1}
-\end{center}
-\end{table}
-
-\end{primer}
-
-
-
-
-
-\section{Prvi naslov}
-\label{sec:naslov1}
-
-
-Ovde pišem tekst. 
-Ovde pišem tekst. 
-Ovde pišem tekst. 
-Ovde pišem tekst. 
-Ovde pišem tekst. 
-Ovde pišem tekst. 
-Ovde pišem tekst. 
-Ovde pišem tekst. 
-
-
-\subsection{Prvi podnaslov}
-\label{subsec:podnaslov1}
-
-Ovde pišem tekst. 
-Ovde pišem tekst. 
-Ovde pišem tekst. 
-Ovde pišem tekst. 
-Ovde pišem tekst. 
-Ovde pišem tekst. 
-Ovde pišem tekst. 
-
-\subsection{Drugi podnaslov}
-\label{subsec:podnaslov2}
-
-Ovde pišem tekst. 
-Ovde pišem tekst. 
-Ovde pišem tekst. 
-Ovde pišem tekst. 
-Ovde pišem tekst. 
-Ovde pišem tekst. 
-
-\section{Drugi naslov}
-\label{sec:naslov2}
-
-Ovde pišem tekst. 
-Ovde pišem tekst. 
-Ovde pišem tekst. 
-Ovde pišem tekst. 
-
-\subsection{... podnaslov}
-\label{subsec:podnaslovN}
-
-Ovde pišem tekst. 
-Ovde pišem tekst. 
-Ovde pišem tekst. 
-Ovde pišem tekst. 
-Ovde pišem tekst. 
-Ovde pišem tekst. 
-
-\section{n-ti naslov}
-\label{sec:naslovN}
-
-Ovde pišem tekst. 
-Ovde pišem tekst. 
-Ovde pišem tekst. 
-Ovde pišem tekst. 
-Ovde pišem tekst. 
-
-\subsection{... podnaslov}
-\label{subsec:podnaslovK}
-
-Ovde pišem tekst. 
-Ovde pišem tekst. 
-Ovde pišem tekst. 
-Ovde pišem tekst. 
-Ovde pišem tekst. 
-
-\subsection{... podnaslov}
-\label{subsec:podnaslovM}
-
-Ovde pišem tekst. 
-Ovde pišem tekst. 
-Ovde pišem tekst. 
-Ovde pišem tekst. 
-Ovde pišem tekst. 
-
-\section{Poslednji naslov}
-\label{sec:naslovM}
-
-Ovde pišem tekst. 
-Ovde pišem tekst. 
-Ovde pišem tekst. 
-Ovde pišem tekst. 
-Ovde pišem tekst. 
-Ovde pišem tekst. 
-Ovde pišem tekst. 
-Ovde pišem tekst. 
-Ovde pišem tekst. 
-
-\section{Zaključak}
-\label{sec:zakljucak}
-
-Ovde pišem zaključak. 
-Ovde pišem zaključak. 
-Ovde pišem zaključak. 
-Ovde pišem zaključak. 
-Ovde pišem zaključak. 
-Ovde pišem zaključak. 
-Ovde pišem zaključak. 
-Ovde pišem zaključak. 
-Ovde pišem zaključak. 
-Ovde pišem zaključak. 
-Ovde pišem zaključak. 
-Ovde pišem zaključak. 
+Primeri korišćenja crveno-crnih stabala:
+\begin{itemize}
+    \item  Java: java.util.TreeMap, java.util.TreeSet
+    \item C++ STL: map, multimap, multiset \cite{gcc}
+    \item Linux jezgro: Potpune fer raspoređivač, linux/rbtree.h
+    \item U funkcionalnom programiranju za implementaciju postojanih struktura podataka. Tada svaka operacija brisanja i umetanja ima dodatnu memorijsku složenost O(log n) kako bi moglo da se rekonstruišu ranija stabla \cite{persistent}.
+\end{itemize}
 
 
 \addcontentsline{toc}{section}{Literatura}
@@ -277,13 +183,6 @@ Ovde pišem zaključak.
 \bibliography{seminarski} 
 \bibliographystyle{plain}
 
-\appendix
-\section{Dodatak}
-Ovde pišem dodatne stvari, ukoliko za time ima potrebe.
-Ovde pišem dodatne stvari, ukoliko za time ima potrebe.
-Ovde pišem dodatne stvari, ukoliko za time ima potrebe.
-Ovde pišem dodatne stvari, ukoliko za time ima potrebe.
-Ovde pišem dodatne stvari, ukoliko za time ima potrebe.
 
 
 \end{document}
