@@ -1,6 +1,8 @@
 % !TEX encoding = UTF-8 Unicode
 
 \documentclass[a4paper]{article}
+\usepackage[T1]{fontenc} % da ne smara na linuxu
+
 
 \usepackage{color}
 \usepackage{url}
@@ -20,7 +22,7 @@
 
 \title{Crveno-crna stabla\\ \small{Seminarski rad u okviru kursa\\Konstrukcija i analiza algoritama 2\\ Matematički fakultet}}
 
-\author{Nikola Dimitrijević, 1086/2017\\ nikoladim95@gmail.com}
+\author{Nikola Dimitrijevića, 1086/2017\\ nikoladim95@gmail.com}
 \maketitle
 
 \abstract{
@@ -72,6 +74,33 @@ Crveno-crna stabla se koriste za skladištenje podataka koji imaju uređenost, p
     Razlika je u tome što crveno-crna stabla garantuju O(1) rotacija po operaciji umetanja. 
     Ta stvar zaista utiče na performanse u pravim implementacijama.
 
+    Crveno-crna stabla garantuju da jedna strana stabla nije vise od duplo duza od druge.
+
+    AVL stabla imaju 4 rotacije. LR, LL, RR, RL.
+    Crveno-crna stabla imaju samo levu rotaciju i desnu. Medjutim, postoje neki slucajevi kada se brise element u kojima je potrebna dodatna obrada
+    kako bi stablo ostalo balansirano.
+    Ima 6 mogucih slucajeva. Ide od prvog do poslednjeg, usput primenjujuci pravila ako je moguce. Postoje tri terminirajuca pravila, tj. 
+    ako je njihov uslov zadovoljen, onda se odradi potrebno azuriranje i prekida prolazak kroz ostale slucajeve.
+    
+    Posto su i crveno-crno stablo i AVL stablo stabla pretrage, na uobicajen nacin se vrsi pretraga. Pocevsi od korena, ako je trenutni cvor trazen gotovo, inace ako
+    je trazeni manji od trenutnog rekurzivno se pretrazuje levo podstablo, inace se rekurzivno pretrazuje desno podstablo.
+\section{Umetanje}
+    Kada se dodaje nova vrednost u stablo, uvek se prvo taj cvor oboji u crveno.
+    Spusta se kroz stablo do listova, i onda se umece kao potomak.
+
+    Trougao formacija je...
+    Linija formacija je...
+
+    Ako je roditelj crn, onda smo gotovi
+
+    Ako je novi cvor koren, oboji ga u crno.
+    Ako mu je ujak crven, onda ...
+    Ako mu je ujak crn i u liniji su, onda ...
+    Ako mu je ujak crn i u trouglu su, onda ...
+
+
+
+\section{Brisanje}
 
 Reference koje se koriste u ovom tekstu zadate su u datoteci {\em seminarski.bib}. Prevođenje u pdf format u Linux okruženju može se uraditi na sledeći način:
 \begin{verbatim}
