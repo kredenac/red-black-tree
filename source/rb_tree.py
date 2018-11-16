@@ -351,6 +351,15 @@ class Node():
         while not curr.right.isNull and curr.right.val == curr.val:
             curr = curr.right
         return curr
+    
+    def toSortedList(self):
+        ret = []
+        if not self.left.isNull:
+            ret = self.left.toSortedList()
+        ret.append(self.val)
+        if not self.right.isNull:
+            ret.extend(self.right.toSortedList())
+        return ret
 
 # RBTree is a wrapper around Nodes, which actually do all the work
 class RBTree():
@@ -364,7 +373,12 @@ class RBTree():
 
     def remove(self, newVal):
         self.root.remove(newVal, self)
-        
+    
+    def toSortedList(self):
+        if self.root is None:
+            return []
+        return self.root.toSortedList()
+
     def print(self, level=0):
         if self.root is None:
             print("Empty tree.")
@@ -399,6 +413,8 @@ def main():
     tree.insert(777)
     tree.print()
     print("finding...", tree.find(44))
+
+    print("sorted = ", tree.toSortedList())
     print("Bye")
 
 if __name__ == "__main__":
