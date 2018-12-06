@@ -1,3 +1,7 @@
+import sys
+import random
+import time
+
 class Node():
     # root is black
     # leaves are black
@@ -136,8 +140,8 @@ class Node():
         leftSon = self.left
         leftSonOldRight = leftSon.right
         leftSon.right = self
-        wasLeftSon = oldPar.left == self
         if not wasRoot:
+            wasLeftSon = oldPar.left == self
             if wasLeftSon:
                 oldPar.left = leftSon
             else:
@@ -149,7 +153,8 @@ class Node():
         leftSon.par = oldPar
         if changeCol:
             self.isRed = False
-            oldPar.isRed = True
+            if not wasRoot:
+                oldPar.isRed = True
     
     def rightRotateDel(self, changeCol):
         root = self
@@ -389,8 +394,8 @@ class RBTree():
         if self.root is None:
             return None
         return self.root.find(val)
-        
-def main():
+
+def test():
     print("Hi")
     tree = RBTree()
 
@@ -416,6 +421,27 @@ def main():
 
     print("sorted = ", tree.toSortedList())
     print("Bye")
+
+def main():
+    if len(sys.argv) == 1:
+        n = 30000
+        #test()
+        #return
+    else:
+        n = int(sys.argv[1])
+        print(n)
+    for n in range(1000_000, 1000_001, 100_000):#range(500000, 1000_000, 100_000):
+        start = time.time()
+
+        tree = RBTree()
+        for _ in range(0,n):
+            x = random.randint(-1000_000, 1000_000)
+            tree.insert(x)
+
+        end = time.time()
+        timeLength =  end - start
+        print(n, timeLength)
+
 
 if __name__ == "__main__":
     main()

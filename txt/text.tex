@@ -8,6 +8,7 @@
 \usepackage{url}
 \usepackage[utf8]{inputenc} % make weird characters work
 \usepackage{graphicx}
+\usepackage{rotating} % slika rotirana
 
 \usepackage[serbian]{babel}
 %\usepackage[english,serbianc]{babel} %ukljuciti babel sa ovim opcijama, umesto gornjim, ukoliko se koristi cirilica
@@ -144,7 +145,7 @@ Brisanje je komplikovanije od pretrage i umetanja.
 
 
 \section{Upoređivanje sa AVL stablima}
-    Crveno-crna stabla su, kao i AVL stabla, samobalansirajuća. Oba pružaju O(log n) vreme pretrage, umetanja i brisanja.
+    Crveno-crna stabla su, kao i AVL stabla, samobalansirajuća. Oba pružaju $O(log n)$ vreme pretrage, umetanja i brisanja.
     AVL stabla su bila popularna pre nego što su crveno-crna stabla postala poznata.
 
     Za razliku od AVL stabla, teža su za implementaciju. Pre svega zbog svih detalja implementacije šest različitih slučajeva 
@@ -153,7 +154,7 @@ Brisanje je komplikovanije od pretrage i umetanja.
 
     AVL stabla imaju jaču garanciju balansiranosti. Kod njih je razlika dubina levog i densog podstabla najviše jedan, a crveno-crna garantuju da razlika nije više od duplo.
 
-    Prednost crveno-crnih stabla je što garantuju O(1) rotacija po operaciji umetanja. 
+    Prednost crveno-crnih stabla je što garantuju $O(1)$ rotacija po operaciji umetanja. 
     Ta stvar zaista utiče na performanse u pravim implementacijama.
 
     Crveno-crna stabla garantuju da jedna strana stabla nije više od duplo duža od druge.
@@ -177,6 +178,19 @@ Primeri korišćenja crveno-crnih stabala:
     \item U funkcionalnom programiranju za implementaciju postojanih struktura podataka. Tada svaka operacija brisanja i umetanja ima dodatnu memorijsku složenost O(log n) kako bi moglo da se rekonstruišu ranija stabla \cite{persistent}.
 \end{itemize}
 
+Na slici \ref{fig:chart} je nacrtan grafik na kome se vidi vreme  izvršavanja algoritma za različite ulaze.
+Ulaz označava koliko će se nasumičnih brojeva ubaciti u stablo.
+Vreme izvršavanja počinje da bude osetno tek za ulaze od oko 90000.
+Za veće ulaze se jasnije vidi kako raste potrebno vreme. Kada je u pitanju
+ulaz veličine pola miliona tada je potrebno 11 sekundi, a za milion 25 sekundi.
+To je tek nešto sporije od očekivanog odnosa vremena za algoritam linearne složenosti, što je 
+razuman reuzltat s obzirom da je složenost ubacivanja $n$ elemenata $O(n logn)$.
+
+\begin{sidewaysfigure}[ht]
+    \includegraphics[width=\textwidth]{chart.png}
+    \caption{Testiranje algoritma, skala x ose raste brže od linearno.}
+    \label{fig:chart}
+\end{sidewaysfigure}
 
 \addcontentsline{toc}{section}{Literatura}
 \appendix
