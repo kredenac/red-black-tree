@@ -27,7 +27,7 @@
 \maketitle
 
 \abstract{
-    Crveno-crna stabla su vrsta binarnih samobalansirajućih stabala. To je struktura podataka koja garantuje brze operacije umetanja, pretrage i brisanja.
+    Crveno-crna stabla su vrsta binarnih uređenih samobalansirajućih stabala. To je struktura podataka koja garantuje brze operacije umetanja, pretrage i brisanja.
     Svaki čvor stabla ima boju: crnu ili crvenu. Uz određena pravila i načine na koje se menja stablo dobija se gornja granica za koliko stablo može biti nebalansirano.
 
 }
@@ -38,7 +38,7 @@
 
 \section{Osnovno}
 \label{sec:uvod}
-Crveno-crna stabla su struktura podataka koja omogućava brze operacije umetanja, brisanja i pretrage. Spadaju u binarna samobalansirajuća stabla.
+Crveno-crna stabla su struktura podataka koja omogućava brze operacije umetanja, brisanja i pretrage. Spadaju u binarna samobalansirajuća pretraživačka stabla.
 Svaki čvor ima dodatan bit (ili već neki tip podatka) koji reprezentuje boju čvora. Autori su se odlučili za crvenu i crnu boju jer je, pored klasične crne,
 crvena najbolje izgledala na tadašnjim laserskim štampačima \cite{funfact}. Još jedan razlog je to što su imali crvene i crne hemijske pa su tako crtali ova stabla.
 
@@ -46,12 +46,12 @@ crvena najbolje izgledala na tadašnjim laserskim štampačima \cite{funfact}. J
 \begin{center}
 \includegraphics[scale=0.2]{example.png}
 \end{center}
-\caption{Primer crveno-crnog stabla}
+\caption{Primer crveno-crnog stabla.}
 \label{fig:primer}
 \end{figure}
 
-Za razliku od mnogih stabala, u implementacijama crveno-crnih stabala se umesto uobičajenih null pokazivača koriste specijalni null čvorovi (Na slici \ref{fig:primer} su označeni sa NIL) koji ne sadrže nikakve podatke
-koji se unose u strukturu. Iako je moguće implementirati sve operacije crveno-crnih stabala korišćenjem običnih null pokazivača, ovako se uprošćavaju njihove implementacije.
+Za razliku od mnogih stabala, u implementacijama crveno-crnih stabala se umesto uobičajenih null pokazivača koriste specijalni null čvorovi (na slici \ref{fig:primer} su označeni sa NIL) koji ne sadrže nikakve podatke
+koji se unose u strukturu. Iako je moguće implementirati sve operacije crveno-crnih stabala korišćenjem običnih null pokazivača, ovako se uprošćava njihova implementacija.
 Da bi se uštedelo na memoriji, umesto da postoji mnogo različitih null čvorova, moguće je imati jedan takav čvor u memoriji, a da svi ostali koji žele da pokazuju na null čvor pokazuju
 baš na samo tog jednog.
 Crveno-crna stabla se koriste za skladištenje podataka koji imaju uređenost, pošto se na osnovu poretka određuje pozicija elemenata u stablu.
@@ -91,25 +91,25 @@ je traženi manji od trenutnog rekurzivno se pretražuje levo podstablo, inače 
 \textit{Ujak} čvora je od dede čvora drugi sin, odnosno onaj sin koji nije roditelj čvoru.
 
 
-    Trougao formacija je kada je čvor levi sin oca, a otac desni sin dede, ili slučaj u ogledalu. 
-    Primer na slici \ref{fig:triangle}.
+    Trougao formacija je kada je čvor levi sin oca, a otac desni sin dede, ili slučaj u ogledalu 
+    (videti primer na slici \ref{fig:triangle}).
     \begin{figure}[h!]
         \begin{center}
-        \includegraphics[scale=0.5]{triangle.png}
+        \includegraphics[scale=0.3]{triangle.png}
         \end{center}
         \caption{Trougao formacija.}
         \label{fig:triangle}
     \end{figure}
 
-    Linija formacija je kada je čvor levi sin oca i otac levi sin dede, ili u slučaj ogledalu.
-    Primer na slici \ref{fig:line}.
+    Linija formacija je kada je čvor levi sin oca i otac levi sin dede, ili slučaj u ogledalu
+    (videti primer na slici \ref{fig:line}).
     \begin{figure}[h!]
         \begin{center}
-        \includegraphics[scale=0.5]{line.png}
+        \includegraphics[scale=0.3]{line.png}
         \end{center}
         \caption{Linija formacija.}
         \label{fig:line}
-        \end{figure}
+    \end{figure}
 
     Postupak umetanja:
     \begin{itemize}
@@ -122,9 +122,20 @@ je traženi manji od trenutnog rekurzivno se pretražuje levo podstablo, inače 
    \item Ako je novi čvor koren, oboji ga u crno.
    \item Ako mu je otac crn, onda se ne radi ništa, jer je stablo i dalje ispravno.
    \item Ako mu je ujak crven, onda oboji ujaka i oca u crno, a dedu u crveno. Obradi dedu rekurzivno.
-   \item Ako mu je ujak crn i u trouglu su, onda se rotira otac čvora u suprotnu stranu od sina.
-   \item Ako mu je ujak crn i u liniji su, onda se deda čvora rotira u suprotnu stranu od unuka.
+   \item Ako mu je ujak crn i u trouglu su, onda se rotira otac čvora u suprotnu stranu od sina (videti slučaj 1 na slici \ref{fig:rotation}).
+   \item Ako mu je ujak crn i u liniji su, onda se deda čvora rotira u suprotnu stranu od unuka (videti slučaj 2 na slici \ref{fig:rotation}).
+
+    \begin{figure}[h!]
+        \begin{center}
+        \includegraphics[scale=0.26]{rotation.png}
+        \end{center}
+        \caption{Postupak rotiranja, prilagođeno od \cite{clrs}.}
+        \label{fig:rotation}
+    \end{figure}
+
 \end{itemize}
+
+
 
 
 \subsection{Brisanje}
@@ -140,19 +151,19 @@ Brisanje je komplikovanije od pretrage i umetanja.
     \item Ako nema nijednog potomka i crven je čvor, onda se samo obriše.
     \item Inače, pošto je čvor crn ne može samo da se obriše jer bi se smanjila crna dubina.
     \item Ako čvor ima jedno crveno dete, umesto sebe stavi dete i obriše sebe.
-    \item Inače se prolazi kroz šest specifičnih i zamršenih koraka. Za detalje pogledati \cite{cases}.
+    \item Inače se prolazi kroz šest specifičnih i zamršenih koraka. Za detalje pogledati \cite{cases} \cite{clrs}.
 \end{itemize}
 
 
 \section{Upoređivanje sa AVL stablima}
-    Crveno-crna stabla su, kao i AVL stabla, samobalansirajuća. Oba pružaju $O(log n)$ vreme pretrage, umetanja i brisanja.
+    Crveno-crna stabla su, kao i AVL stabla, samobalansirajuća i uređena. Oba pružaju $O(\log n)$ vreme pretrage, umetanja i brisanja.
     AVL stabla su bila popularna pre nego što su crveno-crna stabla postala poznata.
 
     Za razliku od AVL stabla, teža su za implementaciju. Pre svega zbog svih detalja implementacije šest različitih slučajeva 
     popravke nakon brisanja.
     Oba stabla imaju linearnu memorijsku složenost.
 
-    AVL stabla imaju jaču garanciju balansiranosti. Kod njih je razlika dubina levog i densog podstabla najviše jedan, a crveno-crna garantuju da razlika nije više od duplo.
+    AVL stabla imaju jaču garanciju balansiranosti. Kod njih je razlika dubina levog i desnog podstabla najviše jedan, a crveno-crna garantuju da razlika nije više od duplo.
 
     Prednost crveno-crnih stabla je što garantuju $O(1)$ rotacija po operaciji umetanja. 
     Ta stvar zaista utiče na performanse u pravim implementacijama.
@@ -175,7 +186,7 @@ Primeri korišćenja crveno-crnih stabala:
     \item  Java: java.util.TreeMap, java.util.TreeSet
     \item C++ STL: map, multimap, multiset \cite{gcc}
     \item Linux jezgro: Potpune fer raspoređivač, linux/rbtree.h
-    \item U funkcionalnom programiranju za implementaciju postojanih struktura podataka. Tada svaka operacija brisanja i umetanja ima dodatnu memorijsku složenost O(log n) kako bi moglo da se rekonstruišu ranija stabla \cite{persistent}.
+    \item U funkcionalnom programiranju za implementaciju postojanih struktura podataka. Tada svaka operacija brisanja i umetanja ima dodatnu memorijsku složenost $O(\log n)$ kako bi moglo da se rekonstruišu ranija stabla \cite{persistent}.
 \end{itemize}
 
 Na slici \ref{fig:chart} je nacrtan grafik na kome se vidi vreme  izvršavanja algoritma za različite ulaze.
