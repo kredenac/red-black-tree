@@ -1,8 +1,7 @@
 % !TEX encoding = UTF-8 Unicode
 
 \documentclass[a4paper]{article}
-\usepackage[T1]{fontenc} % da ne smara na linuxu
-
+\usepackage[T1]{fontenc} % na linuxu se bunio
 
 \usepackage{color}
 \usepackage{url}
@@ -11,12 +10,10 @@
 \usepackage{rotating} % slika rotirana
 
 \usepackage[serbian]{babel}
-%\usepackage[english,serbianc]{babel} %ukljuciti babel sa ovim opcijama, umesto gornjim, ukoliko se koristi cirilica
 
 \usepackage[unicode]{hyperref}
 \hypersetup{colorlinks,citecolor=green,filecolor=green,linkcolor=blue,urlcolor=blue}
 
-%\newtheorem{primer}{Пример}[section] %ćirilični primer
 \newtheorem{primer}{Primer}[section]
 
 \begin{document}
@@ -29,7 +26,6 @@
 \abstract{
     Crveno-crna stabla su vrsta binarnih uređenih samobalansirajućih stabala. To je struktura podataka koja garantuje brze operacije umetanja, pretrage i brisanja.
     Svaki čvor stabla ima boju: crnu ili crvenu. Uz određena pravila i načine na koje se menja stablo dobija se gornja granica za koliko stablo može biti nebalansirano.
-
 }
 
 \tableofcontents
@@ -79,7 +75,6 @@ dublje od svog brata podstabla.
 
 \section{Operacije}
 
-
 \subsection{Pretraga}
 
 Počevsi od korena, ako je trenutni čvor trazen: gotovo, inače ako
@@ -89,7 +84,6 @@ je traženi manji od trenutnog rekurzivno se pretražuje levo podstablo, inače 
 \textit{Deda} čvora je od čvorovog oca otac.
 
 \textit{Ujak} čvora je od dede čvora drugi sin, odnosno onaj sin koji nije roditelj čvoru.
-
 
     Trougao formacija je kada je čvor levi sin oca, a otac desni sin dede, ili slučaj u ogledalu 
     (videti primer na slici \ref{fig:triangle}).
@@ -129,14 +123,11 @@ je traženi manji od trenutnog rekurzivno se pretražuje levo podstablo, inače 
         \begin{center}
         \includegraphics[scale=0.26]{rotation.png}
         \end{center}
-        \caption{Postupak rotiranja, prilagođeno od \cite{clrs}.}
+        \caption{Postupak rotiranja, preuzeto iz \cite{clrs}.}
         \label{fig:rotation}
     \end{figure}
 
 \end{itemize}
-
-
-
 
 \subsection{Brisanje}
 Brisanje je komplikovanije od pretrage i umetanja.
@@ -153,7 +144,6 @@ Brisanje je komplikovanije od pretrage i umetanja.
     \item Ako čvor ima jedno crveno dete, umesto sebe stavi dete i obriše sebe.
     \item Inače se prolazi kroz šest specifičnih i zamršenih koraka. Za detalje pogledati \cite{cases} \cite{clrs}.
 \end{itemize}
-
 
 \section{Upoređivanje sa AVL stablima}
     Crveno-crna stabla su, kao i AVL stabla, samobalansirajuća i uređena. Oba pružaju $O(\log n)$ vreme pretrage, umetanja i brisanja.
@@ -207,7 +197,5 @@ razuman reuzltat s obzirom da je složenost ubacivanja $n$ elemenata $O(n logn)$
 \appendix
 \bibliography{seminarski} 
 \bibliographystyle{plain}
-
-
 
 \end{document}
