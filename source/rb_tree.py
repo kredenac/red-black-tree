@@ -377,6 +377,11 @@ class RBTree():
             self.root = self.root.insert(newVal)
 
     def remove(self, newVal):
+        if self.root is None:
+            return
+        if self.root.left.isNull and self.root.right.isNull:
+            self.root = None
+            return
         self.root.remove(newVal, self)
     
     def toSortedList(self):
@@ -423,24 +428,18 @@ def test():
     print("Bye")
 
 def main():
-    if len(sys.argv) == 1:
-        n = 30000
-        #test()
-        #return
-    else:
-        n = int(sys.argv[1])
-        print(n)
-    for n in range(1000_000, 1000_001, 100_000):#range(500000, 1000_000, 100_000):
-        start = time.time()
+    tree = RBTree()
+    tree.insert(1)
+    tree.insert(2)
+    tree.insert(-5)
+    tree.remove(1)
+    tree.remove(-5)
+    tree.remove(2)
+    #tree.remove(77)
 
-        tree = RBTree()
-        for _ in range(0,n):
-            x = random.randint(-1000_000, 1000_000)
-            tree.insert(x)
+    tree.print()
 
-        end = time.time()
-        timeLength =  end - start
-        print(n, timeLength)
+
 
 
 if __name__ == "__main__":
