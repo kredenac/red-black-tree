@@ -150,25 +150,25 @@ Brisanje je komplikovanije od pretrage i umetanja.
     popravke nakon brisanja.
     Oba stabla imaju linearnu memorijsku složenost.
 
-    AVL stabla imaju jaču garanciju balansiranosti. Kod njih je razlika dubina levog i desnog podstabla najviše jedan, a crveno-crna garantuju da razlika nije više od duplo.
+    AVL stabla imaju jaču garanciju balansiranosti. Kod njih je razlika dubina levog i desnog podstabla najviše jedan, 
+    a crveno-crna stabla garantuju da jedna strana stabla nije više od duplo duža od druge.
 
     Prednost crveno-crnih stabla je što garantuju $O(1)$ rotacija po operaciji umetanja. 
     To zaista utiče na performanse u pravim implementacijama. Zato se preferiraju 
     AVL stabla u slučaju kada se više radi pretraga, a ako ima više umetanja i brisanja onda
     su bolja crveno-crna stabla.
 
-    Crveno-crna stabla garantuju da jedna strana stabla nije više od duplo duža od druge.
 
-    AVL stabla imaju 4 rotacije. LR, LL, RR, RL.
-    Crveno-crna stabla imaju samo levu i desnu rotaciju. Međutim, postoje neki slučajevi kada se briše element u kojima je potrebna dodatna obrada
+    AVL stabla imaju 4 rotacije: LR, LL, RR, RL, dok
+    crveno-crna stabla imaju samo levu i desnu rotaciju. Međutim, postoje neki slučajevi kada se briše element u kojima je potrebna dodatna obrada
     kako bi stablo ostalo balansirano.
-    Ima 6 mogućih slucajeva. Ide se od prvog do poslednjeg, usput primenjujući pravila ako je moguće. Postoje tri terminirajuća pravila, tj. 
+    Ima 6 mogućih slucajeva. Ide se od prvog do poslednjeg, usput primenjujući njihova pravila ako je moguće. Postoje tri terminirajuća pravila, tj. 
     ako je njihov uslov zadovoljen, onda se odradi potrebno ažuriranje i prekida prolazak kroz ostale slučajeve.
     
     Pošto su i crveno-crno stablo i AVL stablo stabla pretrage, na uobičajen način se vrši pretraga.
 
 \subsection{Zaključak}
-Crveno-crna stabla su danas najpopularniji izbor implementacije samobalansirajućih binarnih stabala.
+Crveno-crna stabla su danas vrlo popularan izbor implementacije samobalansirajućih binarnih stabala.
 
 Primeri korišćenja crveno-crnih stabala:
 \begin{itemize}

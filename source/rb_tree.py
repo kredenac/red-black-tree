@@ -430,9 +430,12 @@ def main():
     tree = RBTree()
     tree.insert(1)
     tree.insert(2)
-    tree.insert(3)
-
+    
+    
     tree.print()
+
+    #a = tree.toSortedList()
+    #print(a)
 
 
 if __name__ == "__main__":
