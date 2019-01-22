@@ -108,16 +108,13 @@ je traženi manji od trenutnog rekurzivno se pretražuje levo podstablo, inače 
     Postupak umetanja:
     \begin{itemize}
 
-    \item Kada se dodaje nova vrednost u stablo, uvek se prvo nov čvor oboji u crveno.
-    \item Spušta se kroz stablo do listova, i onda se umeće kao potomak.
-
-    \item Ako je roditelj crn, onda kraj
-
-   \item Ako je novi čvor koren, oboji ga u crno.
-   \item Ako mu je otac crn, onda se ne radi ništa, jer je stablo i dalje ispravno.
-   \item Ako mu je ujak crven, onda oboji ujaka i oca u crno, a dedu u crveno. Obradi dedu rekurzivno.
-   \item Ako mu je ujak crn i u trouglu su, onda se rotira otac čvora u suprotnu stranu od sina (videti slučaj 1 na slici \ref{fig:rotation}).
-   \item Ako mu je ujak crn i u liniji su, onda se deda čvora rotira u suprotnu stranu od unuka (videti slučaj 2 na slici \ref{fig:rotation}).
+    \item Kada se dodaje nova vrednost u stablo uvek se prvo nov čvor oboji u crveno.
+    \item Spušta se kroz stablo do listova i onda se umeće kao potomak.
+    \item Ako je otac crn onda kraj jer je stablo i dalje ispravno.
+    \item Ako je novi čvor koren oboji ga u crno.
+    \item Ako mu je ujak crven onda oboji ujaka i oca u crno, a dedu u crveno. Obradi dedu rekurzivno.
+    \item Ako mu je ujak crn i u trouglu su onda se rotira otac čvora u suprotnu stranu od sina (videti slučaj 1 na slici \ref{fig:rotation}).
+    \item Ako mu je ujak crn i u liniji su onda se deda čvora rotira u suprotnu stranu od unuka (videti slučaj 2 na slici \ref{fig:rotation}).
 
     \begin{figure}[h!]
         \begin{center}
@@ -156,7 +153,9 @@ Brisanje je komplikovanije od pretrage i umetanja.
     AVL stabla imaju jaču garanciju balansiranosti. Kod njih je razlika dubina levog i desnog podstabla najviše jedan, a crveno-crna garantuju da razlika nije više od duplo.
 
     Prednost crveno-crnih stabla je što garantuju $O(1)$ rotacija po operaciji umetanja. 
-    Ta stvar zaista utiče na performanse u pravim implementacijama.
+    To zaista utiče na performanse u pravim implementacijama. Zato se preferiraju 
+    AVL stabla u slučaju kada se više radi pretraga, a ako ima više umetanja i brisanja onda
+    su bolja crveno-crna stabla.
 
     Crveno-crna stabla garantuju da jedna strana stabla nije više od duplo duža od druge.
 

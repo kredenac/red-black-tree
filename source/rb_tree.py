@@ -401,7 +401,6 @@ class RBTree():
         return self.root.find(val)
 
 def test():
-    print("Hi")
     tree = RBTree()
 
     tree.insert(3)
@@ -431,15 +430,9 @@ def main():
     tree = RBTree()
     tree.insert(1)
     tree.insert(2)
-    tree.insert(-5)
-    tree.remove(1)
-    tree.remove(-5)
-    tree.remove(2)
-    #tree.remove(77)
+    tree.insert(3)
 
     tree.print()
-
-
 
 
 if __name__ == "__main__":
